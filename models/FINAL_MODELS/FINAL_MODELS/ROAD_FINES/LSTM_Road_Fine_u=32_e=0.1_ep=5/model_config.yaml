@@ -1,0 +1,13 @@
+batch_size: 128
+dropout: 0.0
+embedding_output_dims: 128
+epochs: 5
+epsilon: 0.1
+l2_norm_clip: 1.0
+max_clusters: 10
+method: LSTM
+noise_multiplier: 3.9471635887022014
+num_examples: 475196
+trace_quantile: 0.9
+units_per_layer:
+- 32

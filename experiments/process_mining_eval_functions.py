@@ -5,7 +5,19 @@ from pm4py.statistics.variants.log import get as variants_module
 from pm4py.algo.evaluation.earth_mover_distance import algorithm as emd_evaluator
 from pm4py.algo.evaluation.generalization import algorithm as generalization_evaluator
 from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
+from pm4py.algo.evaluation.earth_mover_distance.variants.pyemd import normalized_levensthein
+from pyemd import emd
 
+
+# Maximal viele Zeilen und Spalten anzeigen
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+
+# Maximale Breite der Ausgabe erhöhen
+pd.set_option("display.width", 0)
+
+# Abschneiden langer Inhalte vermeiden
+pd.set_option("display.max_colwidth", None)
 
 def event_distribution(log):
     """Return the count of each event type in a PM4Py event log as a pandas Series.
@@ -18,7 +30,8 @@ def event_distribution(log):
     df = pm4py.convert_to_dataframe(log)
     count_data = df['concept:name'].value_counts()
 
-    return count_data
+    prob_data = count_data / count_data.sum()
+    return prob_data
 
 
 def calculate_trace_length_distribution(log):
@@ -40,8 +53,8 @@ def calculate_trace_length_distribution(log):
 
     # Make index numeric
     #count_data.index = pd.to_numeric(count_data.index)
-
-    return count_data
+    prob_data = count_data / count_data.sum()
+    return prob_data
 
 
 def calc_hellinger(real_data, synthetic_data, input_type = "column"):
@@ -195,3 +208,191 @@ def compare_logs(real_event_log, synthetic_event_log, threshold):
         results[f"synthetic_{key}_Simplicity"] = simp
 
     return results
+
+
+from pm4py.objects.log.importer.xes import importer as xes_importer
+from pm4py.objects.petri_net.importer import importer as pnml_importer
+
+
+def calculate_emd_trace_length(real: pd.Series, synth: pd.Series) -> float:
+    # get all values from both distributions
+    values = sorted(set(real.index).union(synth.index))
+
+    p1 = np.array([real.get(k, 0.0) for k in values], dtype=np.float64)
+    p2 = np.array([synth.get(k, 0.0) for k in values], dtype=np.float64)
+
+    if not np.isclose(p1.sum(), 1.0): p1 /= p1.sum()
+    if not np.isclose(p2.sum(), 1.0): p2 /= p2.sum()
+
+    # ground distance matrix (|real_value_i - synth_value_j|)
+    distance_matrix = np.abs(np.subtract.outer(values, values)).astype(np.float64)
+    
+    return float(emd(p1, p2, distance_matrix))
+
+
+
+
+# XES-Dateien (Pfad ggf. anpassen)
+log_real = xes_importer.apply("example_logs/Sepsis_Cases_Event_Log.xes")
+
+log_no_petri_net_1 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-1_no-petri.xes")
+log_no_petri_net_2 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-2_no-petri.xes")
+log_no_petri_net_3 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-3_no-petri.xes")
+log_no_petri_net_4 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-4_no-petri.xes")
+log_no_petri_net_5 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-5_no-petri.xes")
+
+log_transition_list_1 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-1_transition-list.xes")
+log_transition_list_2 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-2_transition-list.xes")
+log_transition_list_3 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-3_transition-list.xes")
+log_transition_list_4 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-4_transition-list.xes")
+log_transition_list_5 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-5_transition-list.xes")
+
+log_petrinet_playout_1 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-1_simulation.xes")
+log_petrinet_playout_2 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-2_simulation.xes")
+log_petrinet_playout_3 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-3_simulation.xes")
+log_petrinet_playout_4 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-4_simulation.xes")
+log_petrinet_playout_5 = xes_importer.apply("outputs/Sepsis/evaluation/Sepsis_log_1050_run-5_simulation.xes")
+
+logs = {
+    "real": log_real,
+
+    "no_petri_net_run1": log_no_petri_net_1,
+    "no_petri_net_run2": log_no_petri_net_2,
+    "no_petri_net_run3": log_no_petri_net_3,
+    "no_petri_net_run4": log_no_petri_net_4,
+    "no_petri_net_run5": log_no_petri_net_5,
+
+    "transition_list_run1": log_transition_list_1,
+    "transition_list_run2": log_transition_list_2,
+    "transition_list_run3": log_transition_list_3,
+    "transition_list_run4": log_transition_list_4,
+    "transition_list_run5": log_transition_list_5,
+
+    "petrinet_playout_run1": log_petrinet_playout_1,
+    "petrinet_playout_run2": log_petrinet_playout_2,
+    "petrinet_playout_run3": log_petrinet_playout_3,
+    "petrinet_playout_run4": log_petrinet_playout_4,
+    "petrinet_playout_run5": log_petrinet_playout_5,
+
+}
+
+rows = []
+
+for name, log_synth in logs.items():
+    row = {"synthetic_log": name}
+
+    print("start")
+    
+    pnml_path = "normative_models/sepsis_case_normative_model.pnml"
+
+    # === PETRI-NETZ LADEN ===
+    #net, im, fm = pnml_importer.apply(pnml_path)
+    #alignments = pm4py.conformance_diagnostics_alignments(log_synth, net, im, fm)
+    #fitness_values = [alignment.get("fitness") for alignment in alignments]
+    #fitness = sum(fitness_values) / len(fitness_values)
+    #row["fitness"] = fitness
+    
+    real_ed = event_distribution(log_real)
+    synth_ed = event_distribution(log_synth)
+    row["hellinger_event_distribution"] = calc_hellinger(real_ed, synth_ed, input_type="distribution")
+    
+    # Trace Length Distribution
+    td1 = calculate_trace_length_distribution(log_real)
+    td2 = calculate_trace_length_distribution(log_synth)
+    row["earth_mover_distance_length_distribution"] = calculate_emd_trace_length(td1,td2)
+    
+    # Variant Distribution
+    row["earth_mover_distance_trace_variant"] = calculate_earth_mover_distance(log_real, log_synth)
+
+    rows.append(row)
+
+# Als CSV speichern
+df = pd.DataFrame(rows)
+df.to_csv("synthetic_vs_real_evaluation_sepsis_2.csv", index=False)
+print("✅ Ergebnisse gespeichert in synthetic_vs_real_evaluation_sepsis.csv")
+
+
+
+
+
+
+# XES-Dateien (Pfad ggf. anpassen)
+log_real = xes_importer.apply("example_logs/Road_Traffic_Fine_Management_Process_short.xes")
+
+log_no_petri_net_1 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-1_no-petri.xes")
+log_no_petri_net_2 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-2_no-petri.xes")
+log_no_petri_net_3 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-3_no-petri.xes")
+log_no_petri_net_4 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-4_no-petri.xes")
+log_no_petri_net_5 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-5_no-petri.xes")
+
+log_transition_list_1 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-1_transition-list.xes")
+log_transition_list_2 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-2_transition-list.xes")
+log_transition_list_3 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-3_transition-list.xes")
+log_transition_list_4 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-4_transition-list.xes")
+log_transition_list_5 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-5_transition-list.xes")
+
+log_petrinet_playout_1 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-1_simulation.xes")
+log_petrinet_playout_2 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-2_simulation.xes")
+log_petrinet_playout_3 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-3_simulation.xes")
+log_petrinet_playout_4 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-4_simulation.xes")
+log_petrinet_playout_5 = xes_importer.apply("outputs/Road_Fine/evaluation/Road_Fine_log_11390_run-5_simulation.xes")
+
+logs = {
+    "real": log_real,
+
+    "no_petri_net_run1": log_no_petri_net_1,
+    "no_petri_net_run2": log_no_petri_net_2,
+    "no_petri_net_run3": log_no_petri_net_3,
+    "no_petri_net_run4": log_no_petri_net_4,
+    "no_petri_net_run5": log_no_petri_net_5,
+
+    "transition_list_run1": log_transition_list_1,
+    "transition_list_run2": log_transition_list_2,
+    "transition_list_run3": log_transition_list_3,
+    "transition_list_run4": log_transition_list_4,
+    "transition_list_run5": log_transition_list_5,
+
+    "petrinet_playout_run1": log_petrinet_playout_1,
+    "petrinet_playout_run2": log_petrinet_playout_2,
+    "petrinet_playout_run3": log_petrinet_playout_3,
+    "petrinet_playout_run4": log_petrinet_playout_4,
+    "petrinet_playout_run5": log_petrinet_playout_5,
+
+}
+
+rows = []
+
+for name, log_synth in logs.items():
+    row = {"synthetic_log": name}
+
+    print("start")
+    
+    pnml_path = "normative_models/road_fine_normative_model.pnml"
+
+    # === PETRI-NETZ LADEN ===
+    #net, im, fm = pnml_importer.apply(pnml_path)
+    #alignments = pm4py.conformance_diagnostics_alignments(log_synth, net, im, fm)
+    #fitness_values = [alignment.get("fitness") for alignment in alignments]
+    #fitness = sum(fitness_values) / len(fitness_values)
+    #row["fitness"] = fitness
+    
+    real_ed = event_distribution(log_real)
+    synth_ed = event_distribution(log_synth)
+    row["hellinger_event_distribution"] = calc_hellinger(real_ed, synth_ed, input_type="distribution")
+    
+    # Trace Length Distribution
+    td1 = calculate_trace_length_distribution(log_real)
+    td2 = calculate_trace_length_distribution(log_synth)
+    row["earth_mover_distance_length_distribution"] = calculate_emd_trace_length(td1,td2)
+    
+    # Variant Distribution
+    row["earth_mover_distance_trace_variant"] = calculate_earth_mover_distance(log_real, log_synth)
+
+    rows.append(row)
+
+
+# Als CSV speichern
+df = pd.DataFrame(rows)
+df.to_csv("synthetic_vs_real_evaluation_road_fines_2.csv", index=False)
+print("✅ Ergebnisse gespeichert in synthetic_vs_real_evaluation_road_fines.csv")
+

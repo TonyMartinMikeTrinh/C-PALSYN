@@ -1,0 +1,24 @@
+attribute_datatypes:
+  actOrange: object
+  actRed: object
+  blocked: object
+  case:concept:name: object
+  caseType: object
+  closeCode: object
+  concept:name: object
+  diagnosis: object
+  flagA: object
+  flagB: object
+  flagC: object
+  flagD: object
+  isCancelled: object
+  isClosed: object
+  lifecycle:transition: object
+  msgCode: object
+  msgCount: int64
+  msgType: object
+  org:resource: object
+  speciality: object
+  state: object
+  time:timestamp: float64
+  version: object

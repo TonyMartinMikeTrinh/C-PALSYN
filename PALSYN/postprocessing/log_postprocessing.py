@@ -139,7 +139,7 @@ def transform_sentences(synthetic_event_log_sentences, cluster_dict, dict_dtypes
         )
         sys.stdout.flush()
 
-        temp_sentence = ["case:concept:name==" + str(datetime.datetime.now().timestamp()).replace(".", "")]
+        temp_sentence = ["case:concept:name==" + str(datetime.datetime.now().timestamp()).replace(".", "") + str(case_id)]
         epoch = create_start_epoch(start_epoch)
         for word in sentence:
             temp_sentence, epoch = process_word(word, temp_sentence, dict_dtypes, cluster_dict, epoch)

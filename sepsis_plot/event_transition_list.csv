@@ -1,0 +1,17 @@
+concept:name,count
+Admission IC,217
+Admission NC,6740
+CRP,15819
+ER Registration,5250
+ER Sepsis Triage,1739
+ER Triage,4551
+IV Antibiotics,3022
+IV Liquid,1565
+LacticAcid,5051
+Leucocytes,13320
+Release A,3095
+Release B,239
+Release C,103
+Release D,87
+Release E,39
+Return ER,1446

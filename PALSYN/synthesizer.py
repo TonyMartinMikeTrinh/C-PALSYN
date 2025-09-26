@@ -4,6 +4,9 @@ import yaml
 
 import pandas as pd
 import tensorflow as tf
+from pm4py.analysis import check_soundness
+from pm4py.objects.petri_net.obj import PetriNet, Marking
+from typing import Optional, Tuple, Literal
 from keras import Input, Model
 from keras.callbacks import EarlyStopping
 from keras.layers import (
@@ -26,7 +29,7 @@ from tensorflow_privacy.privacy.optimizers.dp_optimizer_keras import (
 from PALSYN.metrics_logger import MetricsLogger, CustomProgressBar
 from PALSYN.preprocessing.log_preprocessing import preprocess_event_log
 from PALSYN.preprocessing.log_tokenization import tokenize_log
-from PALSYN.sampling.log_sampling import sample_batch
+from PALSYN.sampling.log_sampling import sample_batch, sample_batch_1, sample_batch_2
 from PALSYN.postprocessing.log_postprocessing import generate_df
 
 
@@ -226,7 +229,34 @@ class DPEventLogSynthesizer:
         self.initialize_model(input_data)
         self.train(self.epochs)
 
-    def sample(self, sample_size: int, batch_size: int) -> pd.DataFrame:
+    def sample_conditional(self, sample_size: int, batch_size: int, petri_net: Tuple[PetriNet, Marking, Marking], mode: Literal["simulation", "transition-list"] = "simulation"):
+        
+        synthetic_df = pd.DataFrame()
+
+        batch_fns = {
+            "simulation": sample_batch_2,
+            "transition-list": sample_batch_1,
+        }
+
+        batch_fn = batch_fns[mode]
+        synthetic_event_log_sentences = batch_fn(
+            sample_size,
+            self.tokenizer,
+            self.max_sequence_len,
+            self.model,
+            batch_size,
+            self.num_cols,
+            self.column_list,
+            petri_net,
+        )
+
+        df = generate_df(synthetic_event_log_sentences, self.cluster_dict, self.dict_dtypes, self.start_epoch)
+        df.reset_index(drop=True, inplace=True)
+        synthetic_df = pd.concat([synthetic_df, df], axis=0, ignore_index=True)
+
+        return synthetic_df
+
+    def sample(self, sample_size: int, batch_size: int, petri_net: Optional[Tuple[PetriNet, Marking, Marking]] = None, mode: Literal["simulation", "transition-list"] = "simulation") -> pd.DataFrame:
         """
         Sample an event log from a trained DP-Bi-LSTM Model. The model must be trained before sampling. The sampling
         process can be controlled by the temperature parameter, which controls the randomness of sampling process.
@@ -242,6 +272,13 @@ class DPEventLogSynthesizer:
         len_synthetic_event_log = 0
         synthetic_df = pd.DataFrame()
 
+        if petri_net is not None:
+            if check_soundness(*petri_net):
+                print("Petri Net is sound. Start conditional Sampling")
+                return self.sample_conditional(sample_size, batch_size, petri_net, mode)
+            else:
+                print("Petri Net is not sound. Procees stopped")
+                return
         while len_synthetic_event_log < sample_size:
             print("Sampling Event Log with:", sample_size - len_synthetic_event_log, "traces left")
             sample_size_new = sample_size - len_synthetic_event_log
@@ -253,7 +290,8 @@ class DPEventLogSynthesizer:
                 self.model,
                 batch_size,
                 self.num_cols,
-                self.column_list
+                self.column_list,
+                #petri_net,
             )
 
             df = generate_df(synthetic_event_log_sentences, self.cluster_dict, self.dict_dtypes, self.start_epoch)

@@ -1,0 +1,4 @@
+attribute_datatypes:
+  case:concept:name: object
+  concept:name: object
+  time:timestamp: float64

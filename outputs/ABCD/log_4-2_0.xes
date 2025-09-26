@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+	<string key="origin" value="csv" />
+	<trace>
+		<string key="concept:name" value="1751355113062413" />
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T08:17:15.195058+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="D" />
+			<date key="time:timestamp" value="2025-06-25T08:27:15.195058+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1751355113068512" />
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:16:33.446457+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="B" />
+			<date key="time:timestamp" value="2025-06-25T09:26:33.446457+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:36:33.446457+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:46:33.446457+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1751355113076767" />
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:13:49.349790+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="B" />
+			<date key="time:timestamp" value="2025-06-25T09:23:49.349790+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:23:49.349790+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:33:49.349790+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1751355113087763" />
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:22:18.602812+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:32:18.602812+00:00" />
+		</event>
+	</trace>
+</log>

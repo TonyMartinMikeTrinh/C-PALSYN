@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="1.0" xmlns="http://www.xes-standard.org/">
+
+  <trace>
+    <string key="concept:name" value="Case_1"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T08:00:00.000+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <string key="EventOrigin" value="Application" />
+			<string key="lifecycle:transition" value="complete" />
+			<date key="time:timestamp" value="2016-01-01T21:24:12.454000+00:00" />
+			<float key="FirstWithdrawalAmount" value="nan" />
+			<float key="NumberOfTerms" value="nan" />
+			<float key="Accepted" value="nan" />
+			<float key="MonthlyCost" value="nan" />
+			<float key="Selected" value="nan" />
+			<float key="CreditScore" value="nan" />
+			<float key="OfferedAmount" value="nan" />
+    </event>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T08:20:00.000+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-06-25T08:30:00.000+00:00"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Case_2"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T09:00:00.000+00:00"/>
+    </event>
+    <event>
+      <float key="isCancelled" value="nan" />
+			<float key="diagnosis" value="nan" />
+			<date key="time:timestamp" value="2013-12-17T11:56:29+00:00" />
+			<float key="caseType" value="nan" />
+			<float key="speciality" value="nan" />
+			<float key="org:resource" value="nan" />
+      <string key="concept:name" value="D"/>
+      <float key="blocked" value="nan" />
+			<float key="isClosed" value="nan" />
+			<float key="flagD" value="nan" />
+			<float key="flagB" value="nan" />
+			<float key="flagA" value="nan" />
+			<float key="state" value="nan" />
+			<string key="lifecycle:transition" value="complete" />
+			<float key="closeCode" value="nan" />
+			<boolean key="actRed" value="false" />
+			<boolean key="actOrange" value="false" />
+			<boolean key="flagC" value="false" />
+			<float key="msgCount" value="0.0" />
+			<string key="version" value="A" />
+			<float key="msgType" value="nan" />
+			<float key="msgCode" value="nan" />
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Case_3"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T10:00:00.000+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-06-25T10:10:00.000+00:00"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Case_4"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T11:00:00.000+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <string key="EventOrigin" value="Application" />
+			<string key="lifecycle:transition" value="complete" />
+			<date key="time:timestamp" value="2016-01-01T21:24:12.454000+00:00" />
+			<float key="FirstWithdrawalAmount" value="nan" />
+			<float key="NumberOfTerms" value="nan" />
+			<float key="Accepted" value="nan" />
+			<float key="MonthlyCost" value="nan" />
+			<float key="Selected" value="nan" />
+			<float key="CreditScore" value="nan" />
+			<float key="OfferedAmount" value="nan" />
+    </event>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-25T11:20:00.000+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-06-25T11:30:00.000+00:00"/>
+    </event>
+  </trace>
+
+</log>

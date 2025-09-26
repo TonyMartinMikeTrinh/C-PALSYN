@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+	<string key="origin" value="csv" />
+	<trace>
+		<string key="concept:name" value="1750842209985205" />
+		<event>
+			<string key="concept:name" value="B" />
+			<date key="time:timestamp" value="2025-06-25T09:28:39.523599+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="175084220998752" />
+		<event>
+			<string key="concept:name" value="A" />
+			<date key="time:timestamp" value="2025-06-25T09:21:10.501660+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:31:10.501660+00:00" />
+		</event>
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:41:10.501660+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1750842210013082" />
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T08:14:28.408888+00:00" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1750842212464803" />
+		<event>
+			<string key="concept:name" value="C" />
+			<date key="time:timestamp" value="2025-06-25T09:27:11.080399+00:00" />
+		</event>
+	</trace>
+</log>
