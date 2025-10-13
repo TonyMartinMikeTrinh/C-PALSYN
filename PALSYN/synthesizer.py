@@ -46,7 +46,7 @@ except Exception:
 from PALSYN.metrics_logger import MetricsLogger, CustomProgressBar
 from PALSYN.preprocessing.log_preprocessing import preprocess_event_log
 from PALSYN.preprocessing.log_tokenization import tokenize_log
-from PALSYN.sampling.log_sampling import sample_batch, sample_batch_1, sample_batch_2
+from PALSYN.sampling.log_sampling import sample_batch, sample_batch_transition_list, sample_batch_simulation
 from PALSYN.postprocessing.log_postprocessing import generate_df
 
 
@@ -279,8 +279,8 @@ class DPEventLogSynthesizer:
         synthetic_df = pd.DataFrame()
 
         batch_fns = {
-            "simulation": sample_batch_2,
-            "transition-list": sample_batch_1,
+            "simulation": sample_batch_simulation,
+            "transition-list": sample_batch_transition_list,
         }
 
         batch_fn = batch_fns[mode]

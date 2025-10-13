@@ -225,10 +225,9 @@ def sample_batch(
     print(f"\nGenerated {len(cleaned)} sequences")
     print(f"Time to generate sequences: {duration:.2f}s")
 
+    return cleaned
 
-    return clean_synthetic_event_log_sentences
-
-def sample_batch_1(
+def sample_batch_transition_list(
         sample_size: int,
         tokenizer,
         max_sequence_len: int,
@@ -390,7 +389,7 @@ def sample_batch_1(
     return clean_synthetic_event_log_sentences
 
 
-def sample_batch_2(
+def sample_batch_simulation(
         sample_size: int,
         tokenizer,
         max_sequence_len: int,
