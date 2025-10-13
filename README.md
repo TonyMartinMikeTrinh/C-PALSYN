@@ -70,31 +70,49 @@ palsyn_model.save_model("models/Bi-LSTM_Road_Fines_u=32_e=inf")
 ```
 
 ### Sampling Event Logs 
-To sample synthetic event logs, use the following example with a trained model can be used. The sample size is set to 160, and the batch size is set to 16. The synthetic event log is saved as a XES file.
+To sample synthetic event logs, use the following example with a trained model can be used. The sample size is set to 1050, and the batch size is set to 16. The synthetic event log is saved as a XES file.
 Pretrained models can be found in the "models" folder.
 ```bash
 import pm4py
 from PALSYN.synthesizer import DPEventLogSynthesizer
 from PALSYN.postprocessing.log_postprocessing import clean_xes_file
+from pm4py.objects.petri_net.importer import importer as pnml_importer
+
 
 # Load Model
 palsyn_model = DPEventLogSynthesizer()
-palsyn_model.load("models/Bi-LSTM_Road_Fines_u=32_e=inf")
+palsyn_model.load("models/LSTM_Sepsis Case_u=32_e=inf_ep=10")
 
-# Sample
-event_log = palsyn_model.sample(sample_size=5600, batch_size=100)
+# Load a Petri Net
+pnml_path = "petri-net.pnml"
+net, im, fm = pnml_importer.apply(pnml_path)
+
+```
+Choose between 3 sampling processes: standard PALSYN, conditional PALSYN with Transition-List, conditional PALSYN with Petri Net Simulation
+```bash
+# Sample with PALSYN
+event_log = palsyn_model.sample(sample_size=1050, batch_size=16)
+```
+```bash
+# Sample with C-PALSYN-TL
+event_log = palsyn_model.sample(sample_size=1050, batch_size=16, petri_net=(net, im, fm), mode="transtion-list")
+```
+```bash
+# Sample with C-PALSYN-PN
+event_log = palsyn_model.sample(sample_size=1050, batch_size=16, petri_net=(net, im, fm), mode="simulation")
+```
+```bash
 event_log_xes = pm4py.convert_to_event_log(event_log)
 
 # Save as XES File
-xes_filename = "road_fines_e=inf.xes"
+xes_filename = "sepsis=inf.xes"
 pm4py.write_xes(event_log_xes, xes_filename)
 clean_xes_file(xes_filename, xes_filename)
 
 # Save as XSLX File for quick inspection
 df = pm4py.convert_to_dataframe(event_log_xes)
 df["time:timestamp"] = df["time:timestamp"].astype(str)
-df.to_excel("road_fines_e=inf.xlsx", index=False)
-
+df.to_excel("sepsis=inf.xlsx", index=False)
 ```
 
 ## Future Work
@@ -107,9 +125,3 @@ We welcome contributions from the community. If you have any suggestions or issu
 
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details. 
-
-
-
-## Funding 
-This research is funded by the German Federal Ministry of Education and Research (BMBF) and NextGenerationEU (European Union) in the project KI-AIM under the funding code 16KISA115K.
-
